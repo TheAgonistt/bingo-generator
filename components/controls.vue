@@ -12,9 +12,7 @@
       >
         Capture
       </button>
-    </div>
 
-    <div class="row gap">
       <label>
         Show border
         <input
@@ -22,6 +20,16 @@
           v-model="showBorder"
           :checked="showBorder"
           @change="updateShowBorder"
+        />
+      </label>
+
+      <label>
+        Freeze middle image
+        <input
+          type="checkbox"
+          v-model="freezeMiddle"
+          :checked="freezeMiddle"
+          @change="updateFreezeMiddle"
         />
       </label>
     </div>
@@ -34,10 +42,17 @@ const optionsStore = useOptionsStore();
 
 // refs
 const showBorder = ref(true)
+const freezeMiddle = ref(true)
 
 // methods
 const doSuffle = () => {
-  gridStore.doShuffle();
+  if (freezeMiddle.value) {
+    gridStore.doShuffleArrayExceptMiddle();
+  }
+
+  if (!freezeMiddle.value) {
+    gridStore.doShuffle();
+  }
 }
 
 const captureImage = async () => {
@@ -58,6 +73,10 @@ const captureImage = async () => {
 const updateShowBorder = (e) => {
   optionsStore.$patch({showBorder: e.target.checked})
 }
+
+const updateFreezeMiddle = (e) => {
+  optionsStore.$patch({freezeMiddle: e.target.checked})
+}
 // lifecycle
 
 // watch
@@ -68,5 +87,16 @@ const updateShowBorder = (e) => {
     display: flex;
     justify-content: center;
     padding-block: 50px;
+  }
+
+  button {
+    pointer-events: auto;
+    cursor: pointer;
+    background: #e7e7e7;
+    border: none;
+    padding: 0.5rem 1.5rem;
+    margin: 0;
+    font-size: 14px;
+    position: relative;
   }
 </style>

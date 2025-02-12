@@ -16,12 +16,14 @@
         ]" 
       >
         <span class="border"></span>
-        <input
-          class="cell--input" 
-          type="file" 
-          @change="e => handleImageUpload(e, index)"
-          accept="image/*" 
-        />
+        <label>
+          <input
+            class="cell--input" 
+            type="file" 
+            @change="e => handleImageUpload(e, index)"
+            accept="image/*" 
+          />
+        </label>
         <div
           v-if="cell?.preview"
           class="cell__preview"
@@ -58,8 +60,8 @@ gridStore.generateCells();
 
 // watch
 watch(storeCells, async (newStoreCells, oldStoreCells) => {
-  console.log('wwwww');
-  console.log('storeCells: ' ,storeCells)
+  // console.log('wwwww');
+  // console.log('storeCells: ' ,storeCells)
 })
 
 onMounted(() => {
@@ -92,7 +94,6 @@ onMounted(() => {
     
     &.has-border {
       .cell {
-        position: relative;
         &:nth-child(1), &:nth-child(2), &:nth-child(3), &:nth-child(4), &:nth-child(5) {
           .border {
             border-top: 1px solid black;
@@ -110,6 +111,8 @@ onMounted(() => {
           border-bottom: 1px solid black;
           position: absolute;
           inset: 0;
+          pointer-events: none;
+          z-index: 1000;
           // border: 1px solid black;
           // border-collapse: collapse;
         }
@@ -123,18 +126,36 @@ onMounted(() => {
     flex: 0 0 20%;
     max-width: 20%;
     aspect-ratio: 1/1;
-    overflow: hidden;
   }
 
   /* --input */
-  .cell--input {
+  label {
     position: absolute;
     inset: 0;
-    cursor: pointer;
-    opacity: 0;
+    z-index: 100;
+    input {
+      cursor: pointer;
+      opacity: 0;
+      font-size: 0;
+      background: transparent;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      outline: none;
+    }
   }
 
   /* __preview--media */
+  .cell__preview {
+    position: absolute;
+    overflow: hidden;
+    inset: 0;
+    pointer-events: none;
+    z-index: 200;
+  }
+
   .cell__preview--media {
     position: absolute;
     top: 50%;
@@ -144,6 +165,6 @@ onMounted(() => {
     object-fit: cover;
     object-position: center center;
     transform: translate3d(-50%, -50%, 0);
-    z-index: 100;
+    z-index: 50;
   }
 </style>

@@ -1,11 +1,14 @@
 export const useOptionsStore = defineStore('options', {
   state: () => ({
     showBorder: true,
-    keepMiddle: true,
+    freezeMiddle: true,
   }),
   actions: {
     updateShowBorder(newValue) {
       this.showBorder = newValue
+    },
+    updateFreezeMiddle(newValue) {
+      this.freezeMiddle = newValue
     },
   },
 });
