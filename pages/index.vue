@@ -1,16 +1,13 @@
 <template>
   <main>
     <AppHeader />
-
-    <div class="grid--container">
-      <Grid />
-    </div>
+    <Grid />
+    <Controls />
   </main>
 </template>
 
 <style scoped>
   main {
-    /* padding: 50px 0; */
     background: var(--color-back);
   }
 
@@ -18,10 +15,5 @@
     margin: 0;
     padding: 30px 0;
     text-align: center;
-  }
-
-  .grid--container {
-    display: flex;
-    justify-content: center;
   }
 </style>

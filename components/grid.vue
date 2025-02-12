@@ -1,119 +1,125 @@
 <template>
-  <section class="container">
-    <div class="grid">
-
+  <div class="container">
+    <div
+      ref="domGrid"
+      class="grid"
+      :class="[
+        optionsStore?.showBorder ? 'has-border' : '',
+      ]"
+    >
       <div
-        v-for="(cell, index) in cells" 
+        v-for="(cell, index) in gridStore.cells" 
         :key="index"
         class="cell"
         :style="[
           TESTING ? cell.previewTest : '',
         ]" 
       >
-        <input class="cell--input" type="file" @change="e => handleImageUpload(e, index)" accept="image/*" />
+        <span class="border"></span>
+        <input
+          class="cell--input" 
+          type="file" 
+          @change="e => handleImageUpload(e, index)"
+          accept="image/*" 
+        />
         <div
           v-if="cell?.preview"
           class="cell__preview"
         >
           <img :src="cell.preview" alt="Image Preview" class="cell__preview--media" />
         </div>
-
-        <!-- <div v-if="uploading">
-          Uploading...
-        </div>
-        <div v-if="uploadError">
-          {{ uploadError }}
-        </div> -->
-      </div>
-
-      <p @click="doSuffle">RANDOMMMMMMMMMMM</p>
-      
+      </div>      
     </div>
-  </section>
+  </div>
 </template>
 
 <script setup>
+import { storeToRefs } from 'pinia';
 
+const gridStore = useGridStore();
+const { cells: storeCells } = storeToRefs(gridStore) ;
+
+const optionsStore = useOptionsStore();
 
 // methods
-const generateCells = () => {
-  let out = [];
-  for (let index = 0; index < 25; index++) {
-    let obj = {
-      index: index,
-      humanIndex: index + 1,
-      preview: null,
-      previewTest: `background-image: url(https://picsum.photos/200/200?test=${index})`,
-    }
-
-    out = [
-      ...out,
-      obj
-    ]
-  }
-
-  return out;
-}
-
 const handleImageUpload = (event, index) => {
-  selectedFile.value[index] = event.target.files[0];
-  uploadError.value[index] = null; // Clear any previous errors
-  if (selectedFile.value[index]) {
-    cells.value[index].preview = URL.createObjectURL(selectedFile.value[index]); // For local preview
-
-  } else {
-    cells.value[index].preview = null;
-  }
+  gridStore.handleImageUpload(event, index);
 };
-
-const shuffle = (arr) => { 
-  for (let i = arr.length - 1; i > 0; i--) { 
-    const j = Math.floor(Math.random() * (i + 1)); 
-    [arr[i], arr[j]] = [arr[j], arr[i]]; 
-  } 
-  return arr; 
-};
-
-const doSuffle = () => {
-  console.log(' ');
-  console.log(' ');
-  console.log(' ');
-  console.log('--- doSuffle ---');
-  cells.value = shuffle([...cells.value]);
-}
 
 
 // refs
-const TESTING = ref(true);
-const previewURL = ref([]);
-const selectedFile = ref([]);
-const uploading = ref(false);
-const uploadError = ref([]);
-const cells = ref(generateCells());
+const domGrid = ref(null);
+const TESTING = ref(false);
+const cells = ref([]);
 
 // lifecycle
-onUnmounted(() => {
-  if (cells.value?.length > 0) {
-    cells.value.forEach((c) => {
-      URL.revokeObjectURL(c.preview);
-    })
-  }
-});
+gridStore.generateCells();
+
+
+// watch
+watch(storeCells, async (newStoreCells, oldStoreCells) => {
+  console.log('wwwww');
+  console.log('storeCells: ' ,storeCells)
+})
+
+onMounted(() => {
+  gridStore.$patch({domGrid: domGrid.value})
+})
+// onUnmounted(() => {
+//   if (cells.value?.length > 0) {
+//     cells.value.forEach((c) => {
+//       URL.revokeObjectURL(c.preview);
+//     })
+//   }
+// });
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+  .container {
+    display: flex;
+    justify-content: center;
+  }
+  
   .grid {
     display: flex;
     flex-wrap: wrap;
+    aspect-ratio: 1/1;
     width: 100%;
-    max-width: 100%;
-    height: 500px;
-    border: 1px solid var(--color-accent);
+    max-width: 500px;
+    /* width: 100%;
+    max-width: 100%; */
+    /* height: 500px; */
+    
+    &.has-border {
+      .cell {
+        position: relative;
+        &:nth-child(1), &:nth-child(2), &:nth-child(3), &:nth-child(4), &:nth-child(5) {
+          .border {
+            border-top: 1px solid black;
+          }
+        }
+
+        &:nth-child(1), &:nth-child(6), &:nth-child(11), &:nth-child(16), &:nth-child(21) {
+          .border {
+            border-left: 1px solid black;
+          }
+        }
+
+        .border {
+          border-right: 1px solid black;
+          border-bottom: 1px solid black;
+          position: absolute;
+          inset: 0;
+          // border: 1px solid black;
+          // border-collapse: collapse;
+        }
+      }
+    }
   }
+  
 
   .cell {
     position: relative;
-    outline: 1px solid var(--color-accent);
     flex: 0 0 20%;
     max-width: 20%;
     aspect-ratio: 1/1;

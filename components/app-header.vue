@@ -1,24 +1,40 @@
 <template>
   <section>
-    <!-- <div class="menu-bar">
-      <div class="menu-bar">
-
+    <div class="menu-bar">
+      <div class="menu-bar--container">
+        <p class="menu-bar--title">Bingogo</p>
       </div>
-    </div> -->
-    <h2>BINGGOO</h2>
+    </div>
+
   </section>
 </template>
 
 <script setup>
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+  section {
+    margin-block-end: 50px;
+  }
+
   .menu-bar {
-    position: fixed;
-    top: 0;
-    left: 0;
+    display: flex;
+    align-items: center;
     width: 100%;
-    height: 30px;
+    padding-block: 15px;
     background: black;
+
+    &--container {
+      width: 100%;
+      padding-inline: var(--grid-gutter);
+      max-width: var(--grid-max-width);
+      margin-inline: auto;
+    }
+
+    &--title {
+      margin: 0;
+      padding: 0;
+      color: white;
+    }
   }
 </style>

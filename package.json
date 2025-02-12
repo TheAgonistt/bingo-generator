@@ -10,8 +10,14 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@pinia/nuxt": "^0.10.0",
+    "html-to-image": "^1.11.11",
     "nuxt": "^3.15.4",
+    "pinia": "^3.0.0",
     "vue": "latest",
     "vue-router": "latest"
+  },
+  "devDependencies": {
+    "sass": "^1.84.0"
   }
 }
