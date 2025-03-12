@@ -7,30 +7,12 @@
         optionsStore?.showBorder ? 'has-border' : '',
       ]"
     >
-      <div
-        v-for="(cell, index) in gridStore.cells" 
-        :key="index"
-        class="cell"
-        :style="[
-          TESTING ? cell.previewTest : '',
-        ]" 
-      >
-        <span class="border"></span>
-        <label>
-          <input
-            class="cell--input" 
-            type="file" 
-            @change="e => handleImageUpload(e, index)"
-            accept="image/*" 
-          />
-        </label>
-        <div
-          v-if="cell?.preview"
-          class="cell__preview"
-        >
-          <img :src="cell.preview" alt="Image Preview" class="cell__preview--media" />
-        </div>
-      </div>      
+      <Cell
+        v-for="(cell, index) in gridStore.getCells()" 
+        :key="`cell-${index}-${cell.counter}`"
+        :data="cell"
+        :borders="borders"
+      />
     </div>
   </div>
 </template>
@@ -38,42 +20,31 @@
 <script setup>
 import { storeToRefs } from 'pinia';
 
+/* stores */
 const gridStore = useGridStore();
 const { cells: storeCells } = storeToRefs(gridStore) ;
 
 const optionsStore = useOptionsStore();
 
-// methods
-const handleImageUpload = (event, index) => {
-  gridStore.handleImageUpload(event, index);
-};
+/* methods */
 
 
-// refs
+/* refs */
 const domGrid = ref(null);
-const TESTING = ref(false);
-const cells = ref([]);
+const borders = ref([]);
 
-// lifecycle
+/* lifecycle */
 gridStore.generateCells();
 
-
-// watch
+/* watch */
 watch(storeCells, async (newStoreCells, oldStoreCells) => {
-  // console.log('wwwww');
   // console.log('storeCells: ' ,storeCells)
 })
 
+/* lifecycle */
 onMounted(() => {
   gridStore.$patch({domGrid: domGrid.value})
-})
-// onUnmounted(() => {
-//   if (cells.value?.length > 0) {
-//     cells.value.forEach((c) => {
-//       URL.revokeObjectURL(c.preview);
-//     })
-//   }
-// });
+});
 </script>
 
 <style scoped lang="scss">
@@ -101,12 +72,12 @@ onMounted(() => {
         }
 
         &:nth-child(1), &:nth-child(6), &:nth-child(11), &:nth-child(16), &:nth-child(21) {
-          .border {
+          &:deep(.border) {
             border-left: 1px solid black;
           }
         }
 
-        .border {
+        &:deep(.border) {
           border-right: 1px solid black;
           border-bottom: 1px solid black;
           position: absolute;
@@ -118,53 +89,5 @@ onMounted(() => {
         }
       }
     }
-  }
-  
-
-  .cell {
-    position: relative;
-    flex: 0 0 20%;
-    max-width: 20%;
-    aspect-ratio: 1/1;
-  }
-
-  /* --input */
-  label {
-    position: absolute;
-    inset: 0;
-    z-index: 100;
-    input {
-      cursor: pointer;
-      opacity: 0;
-      font-size: 0;
-      background: transparent;
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      border: none;
-      outline: none;
-    }
-  }
-
-  /* __preview--media */
-  .cell__preview {
-    position: absolute;
-    overflow: hidden;
-    inset: 0;
-    pointer-events: none;
-    z-index: 200;
-  }
-
-  .cell__preview--media {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 100%;
-    height: auto;
-    object-fit: cover;
-    object-position: center center;
-    transform: translate3d(-50%, -50%, 0);
-    z-index: 50;
   }
 </style>

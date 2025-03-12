@@ -73,3 +73,11 @@ bun run preview
 ```
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+
+## @TODOs
+- controls for file name
+- controls for file extension
+- controls for width and height
+- allow to randomize cells and generate multiple at once
+- zip multiple download
+

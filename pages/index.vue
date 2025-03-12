@@ -2,13 +2,14 @@
   <main>
     <AppHeader />
     <Grid />
+    <Settings />
     <Controls />
   </main>
 </template>
 
 <style scoped>
   main {
-    background: var(--color-back);
+    background: var(--c-white);
   }
 
   h1 {
